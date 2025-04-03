@@ -1,0 +1,6 @@
+<form method="post">
+    {% csrf_token %}
+    <p>Вы уверены, что хотите удалить этот отклик?</p>
+    <button type="submit">Удалить</button>
+    <a href="{% url 'ad_detail' pk=object.advertisement.pk %}">Отмена</a>
+</form>

@@ -1,0 +1,128 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+<style>
+    .large-image {
+        max-width: 800px !important;
+        width: 100% !important;
+        height: auto !important;
+        margin-bottom: 30px !important;
+    }
+    .large-video {
+        max-width: 800px !important;
+        width: 100% !important;
+        height: auto !important;
+        margin-bottom: 30px !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div>
+        <a href="{% url 'ad_list' %}" class="btn btn-secondary">Вернуться к объявлениям</a>
+    </div>
+    <div>
+        <h2>{{ Advertisement.title }}</h2>
+        <div>{{ Advertisement.text|safe }}</div>
+    </div>
+
+    <h3>Автор объявления:</h3>
+    <div>{{ Advertisement.author.username }}</div>
+
+    <h3>Категории:</h3>
+    <div>
+        {% for category in Advertisement.categories.all %}
+            <span>{{ category.name_category }}</span>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </div>
+
+    <h3>Изображения:</h3>
+    <div>
+        {% for image in Advertisement.images.all %}
+            <img src="{{ image.image.url }}" alt="Изображение объявления" class="large-image">
+        {% endfor %}
+    </div>
+
+    <h3>Видео:</h3>
+    <div>
+        {% if Advertisement.videos.exists %}
+            {% for video in Advertisement.videos.all %}
+                <video controls class="large-video">
+                    <source src="{{ video.video.url }}" type="video/mp4">
+                    Ваш браузер не поддерживает видео.
+                </video>
+            {% endfor %}
+        {% else %}
+            <p>Видео не загружено.</p>
+        {% endif %}
+    </div>
+
+    {% if request.user == Advertisement.author %}
+        <div style="margin-top: 20px;">
+            <a href="{% url 'ad_update' Advertisement.pk %}" class="btn btn-warning">Редактировать объявление</a>
+            <form action="{% url 'ad_delete' Advertisement.pk %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <input type="submit" value="Удалить объявление" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите удалить это объявление?');">
+            </form>
+        </div>
+    {% endif %}
+
+<h3>Отклики</h3>
+    <div>
+        {% if request.user == Advertisement.author %}
+            <!-- Если автор объявления, показываем все отклики -->
+            {% for response in responses %}
+                <p>
+                    <strong>{{ response.user.username }}</strong>: {{ response.text }}
+                    <em>({{ response.created_at|date:"d-m-Y H:i" }})</em>
+
+                    <form action="{% url 'response_accept' response.pk %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="submit" value="Принять отклик" class="btn btn-success" onclick="return confirm('Вы уверены, что хотите принять этот отклик?');">
+                    </form>
+
+                    <form action="{% url 'response_delete' response.pk %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="submit" value="Удалить отклик" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите удалить этот отклик?');">
+                    </form>
+                </p>
+            {% empty %}
+                <p>Нет откликов на это объявление.</p>
+            {% endfor %}
+        {% elif request.user.is_authenticated %}
+            <!-- Если другой пользователь, показываем только его отклики -->
+            {% for response in responses %}
+                {% if response.user == request.user %}
+                    <p>
+                        <strong>{{ response.user.username }}</strong>: {{ response.text }}
+                        <em>({{ response.created_at|date:"d-m-Y H:i" }})</em>
+
+                        <form action="{% url 'response_delete' response.pk %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="submit" value="Удалить отклик" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите удалить этот отклик?');">
+                        </form>
+                    </p>
+                {% endif %}
+            {% empty %}
+                <p>Нет откликов на это объявление.</p>
+            {% endfor %}
+        {% else %}
+            <p>Вы не можете видеть отклики на это объявление.</p>
+        {% endif %}
+    </div>
+
+    {% if user.is_authenticated %}
+        <h3>Оставить отклик</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Оставить отклик</button>
+        </form>
+    {% else %}
+        <p>Чтобы оставить отклик, вам необходимо <a href="{% url 'login' %}">войти</a>.</p>
+    {% endif %}
+</div>
+{% endblock %}

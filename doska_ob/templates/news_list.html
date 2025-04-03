@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Новости</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-image: url('/static/css/images/derevo.webp');
+            background-size: cover;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .separator {
+            margin: 20px 0;
+            border-top: 1px solid #ccc;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .card {
+            background-image: url('/static/css/images/list.webp');
+            background-size: cover;
+            background-repeat: no-repeat;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px;
+            width: calc(33.333% - 20px);
+            min-height: 300px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+            color: #333;
+        }
+
+        h3 {
+            margin: 0;
+        }
+
+        .profile-button, .create-news-button {
+            display: block;
+            margin: 20px 0;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .pagination {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .pagination a {
+            margin: 0 5px;
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .pagination span {
+            margin: 0 5px;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<a href="/" class="profile-button">Вернуться в профиль</a>
+
+{% if is_developer %}
+    <a href="{% url 'create_news' %}" class="create-news-button">Создать новость</a>
+{% endif %}
+
+<div class="separator"></div>
+
+{% if news %}
+    <div class="container">
+        {% for article in news %}
+            <div class="card">
+                <h4><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></h4>
+                <p><strong>Дата публикации:</strong> {{ article.created_at|date:"d, F, Y" }}</p>
+                <p>{{ article.text|truncatechars:50 }}</p>
+                <div style="display: flex; justify-content: center; margin-top: auto;">
+                    {% if article.images.all %}
+                        <img src="{{ article.images.all.0.image.url }}" alt="Изображение статьи" style="max-width: 300px; margin-bottom: 10px;">
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; Первая</a>
+        {% endif %}
+        <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Следующая &raquo;</a>
+        {% endif %}
+    </div>
+{% else %}
+    <p>Новостей нет.</p>
+{% endif %}
+
+</body>
+</html>

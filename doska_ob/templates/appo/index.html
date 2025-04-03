@@ -1,0 +1,103 @@
+{% extends "main.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Страница авторизованного пользователя {{ request.user.username }}</h2>
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-image: url('/static/css/images/derevo.webp');
+        background-size: cover;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .separator {
+        margin: 20px 0;
+        border-top: 1px solid #ccc;
+    }
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .card {
+        background-image: url('/static/css/images/list.webp');
+        background-size: cover;
+        background-repeat: no-repeat;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 15px;
+        margin: 10px;
+        width: calc(33.333% - 20px);
+        min-height: 500px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        box-sizing: border-box;
+        color: #333;
+    }
+
+    h3 {
+        margin: 0;
+    }
+
+    form {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    input[type="text"] {
+        padding: 5px;
+        width: 200px;
+    }
+
+    button {
+        padding: 5px 10px;
+    }
+
+    table {
+        display: none;
+    }
+</style>
+
+<div style="margin: 20px 0; text-align: left;">
+    <form action="/sign/logout/" method="post" style="display: inline;">
+        {% csrf_token %}
+        <input type='submit' value="Выйти" style="background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer;">
+    </form>
+</div>
+
+<div class="separator"></div>
+
+<h3>Ваши объявления:</h3>
+
+<!-- Кнопка создания нового объявления -->
+<div style="text-align: center; margin: 20px 0;">
+    <a href="{% url 'ad_create' %}" style="background-color: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">Создать новое объявление</a>
+</div>
+
+{% if user.advertisement_set.all %}
+    <div class="container">
+        {% for advertisement in user.advertisement_set.all %}
+            <div class="card">
+                <h4><a href="{{ advertisement.get_absolute_url }}">{{ advertisement.title }}</a></h4>
+                <p><strong>Категория:</strong>
+                    {% for category in advertisement.categories.all %}
+                        {{ category.name_category }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+                <p><strong>Дата публикации:</strong> {{ advertisement.created_at|date:"d, F, Y" }}</p>
+                <p>{{ advertisement.text|truncatechars:50 }}</p>
+                <div style="display: flex; justify-content: center; margin-top: auto;">
+                    {% if advertisement.images.all %}
+                        <img src="{{ advertisement.images.all.0.image.url }}" alt="Изображение объявления" style="max-width: 300px; margin-bottom: 10px;">
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <h3>Вы еще не создали ни одного объявления.</h3>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "main.html" %}
+
+{% block content %}
+<h2>Подтверждение кода</h2>
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="code" placeholder="Введите код" required>
+    <button type="submit">Подтвердить</button>
+    {% if error_message %}
+        <p>{{ error_message }}</p>
+    {% endif %}
+</form>
+{% endblock %}

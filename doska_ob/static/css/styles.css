@@ -1,0 +1,51 @@
+body {
+    background-image: url('/static/css/images/derevo.webp'); /* Путь к изображению дерева */
+    background-size: cover;
+    margin: 0;
+    height: 100vh; /* Занимает всю высоту окна */
+    font-family: Arial, sans-serif;
+    font-size: 150%;
+}
+
+.container {
+
+    background-image: url('/static/css/images/list.webp'); /* Возвращаем фон бумаги */
+    background-color: rgba(243, 231, 143, 0.9); /* Цвет фона контейнера */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    max-width: 1200px;
+    margin: auto;
+    margin-top: 50px; /* Отступ сверху для отделения от верхнего края */
+}
+
+h2, h3, p {
+    margin: 10px 0;
+    text-align: center; /* Центрирование заголовков */
+}
+
+img {
+    width: 100%; /* Занимает 100% ширины родительского элемента */
+    height: auto; /* Сохраняет пропорции */
+}
+
+video {
+    width: 100%; /* То же самое для видео */
+    height: auto; /* Сохраняет пропорции */
+}
+
+.btn {
+    display: block; /* Перенос кнопки на новую строку */
+    text-align: center; /* Центрирование текста кнопки */
+    margin: 20px auto; /* Отступы */
+    padding: 10px 20px; /* Паддинг для кнопки */
+    border: none; /* Убираем рамку */
+    border-radius: 5px; /* Закругляем углы */
+    background-color: #6c757d; /* Цвет фона кнопки */
+    color: white; /* Цвет текста кнопки */
+    text-decoration: none; /* Убираем подчеркивание */
+}
+
+.btn:hover {
+    background-color: #5a6268; /* Цвет фона кнопки при наведении */
+}

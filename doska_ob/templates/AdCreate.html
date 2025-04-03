@@ -1,0 +1,44 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Редактировать объявление</h1>
+<style>
+.separator {
+    margin: 20px 0;
+    border-top: 1px solid #ccc;
+}
+form {
+    text-align: center;
+    margin: 20px 0;
+}
+</style>
+<hr>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <div>
+        <h3>Текущие изображения:</h3>
+        {% for image in form.instance.advertisementimage_set.all %}
+            <img src="{{ image.image.url }}" alt="Текущее изображение" style="max-width: 100px; max-height: 100px;">
+        {% endfor %}
+        <h3>Загрузите новые изображения:</h3>
+        <input type="file" name="image" id="id_image" accept="image/*" multiple>
+    </div>
+
+    <div>
+        <h3>Текущие видео:</h3>
+        {% for video in form.instance.advertisementvideo_set.all %}
+            <video width="320" height="240" controls>
+                <source src="{{ video.video.url }}" type="video/mp4">
+                Ваш браузер не поддерживает видео.
+            </video>
+        {% endfor %}
+        <h3>Загрузите новые видео:</h3>
+        <input type="file" name="video" id="id_video" accept="video/*" multiple>
+    </div>
+
+    <button type="submit">Сохранить</button>
+</form>
+{% endblock content %}

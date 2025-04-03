@@ -1,0 +1,21 @@
+<html>
+    <head>
+        <title>Профиль</title>
+    </head>
+    <body>
+        <div>
+            <h1><a href="/">Профиль</a></h1>
+        </div>
+        <div style="margin: 20px 0;">
+            <a href="http://127.0.0.1:8000/Advertisements/">
+                <button style="background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer;">Перейти на главную</button>
+            </a>
+        </div>
+
+        {% if user.is_authenticated %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </body>
+</html>
